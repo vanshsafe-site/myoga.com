@@ -419,10 +419,6 @@
         <div class="stat-value" id="totalTime">25</div>
         <div class="stat-label">Total Minutes</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-value" id="activeTime">0</div>
-        <div class="stat-label">Active Minutes</div>
-      </div>
     </div>
 
     <div class="task-grid" id="taskGrid">
@@ -569,8 +565,6 @@
       pauseBtn.style.display = 'inline-block';
       resetBtn.style.display = 'inline-block';
       
-      activeTimers.add(taskId);
-      
       const updateTimer = () => {
         const minutes = Math.floor(timeRemaining / 60);
         const seconds = timeRemaining % 60;
@@ -677,10 +671,7 @@
 
     function updateStats() {
       const completed = Object.values(taskStates).filter(state => state.completed).length;
-      const activeCount = activeTimers.size;
-      
       document.getElementById('completedTasks').textContent = completed;
-      document.getElementById('activeTime').textContent = activeCount;
     }
 
     function celebrate() {
