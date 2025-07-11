@@ -384,6 +384,41 @@
       }
     }
   </style>
+  
+  <script>
+    // Sound control flag
+    let soundsEnabled = true;
+
+    function playSound(type) {
+      if (!soundsEnabled) return;
+      
+      // Create audio context for different sound types
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      switch(type) {
+        case 'start':
+          oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+          break;
+        case 'complete':
+          oscillator.frequency.setValueAtTime(1000, audioContext.currentTime);
+          break;
+        case 'pause':
+          oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+          break;
+      }
+      
+      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.5);
+    }
+  </script>
 </head>
 <body>
   <div class="container">
@@ -565,6 +600,9 @@
       pauseBtn.style.display = 'inline-block';
       resetBtn.style.display = 'inline-block';
       
+      // Play start sound
+      playSound('start');
+      
       const updateTimer = () => {
         const minutes = Math.floor(timeRemaining / 60);
         const seconds = timeRemaining % 60;
@@ -601,6 +639,9 @@
         startBtn.style.display = 'inline-block';
         startBtn.textContent = 'Resume';
         pauseBtn.style.display = 'none';
+
+        // Play pause sound
+        playSound('pause');
       }
     }
 
@@ -643,6 +684,9 @@
       
       timeDisplay.textContent = '00:00';
       statusDisplay.textContent = '✅ Completed!';
+      
+      // Play end sound
+      playSound('complete');
       
       celebrate();
       saveTaskStates();
